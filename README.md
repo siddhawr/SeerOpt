@@ -111,48 +111,25 @@ bash scripts/training/seerdrive_eval.sh
 
 
 ### 🔧 How to Run
+We provide two distinct pipelines for trajectory refinement: GTSAM (Factor Graphs) and MPC (Model Predictive Control).
 ```bash
 
+# 1. Run GTSAM Optimization
+cd SeerDrive/gtsam/
+python plot_all_trajs.py
 
-```
-
-### 🔧 Install Other Dependancy
-```bash
-# Install conda packages
-conda install pillow=11.0.0 pandas=2.2.3 opencv=4.11.0 scipy=1.13.1 numpy=1.26.4 -c conda-forge
-
-# Install GTSAM
-conda install -c conda-forge gtsam=4.2.0
-
-# Install HuggingFace Transformers
-pip install transformers==4.50.3
-```
-
-### 📚 KITTI Dataset
-We evaluate our pipeline on the KITTI Odometry Benchmark, leveraging both the raw image sequences and the official ground‑truth trajectories. To set up:
-
-1. Download the **Grayscale Odometry Sequences** (≈22 GB) and the corresponding **ground‑truth poses** (≈4 MB) from the [KITTI Odometry Benchmark](https://www.cvlibs.net/datasets/kitti/eval_odometry.php).  
-2. In `main.py`, set:
-   ```python
-   groundtruth_file = "/path/to/poses.txt"
-   image_folder     = "/path/to/image/sequences/"
-3. Ensure that your folder structure matches KITTI’s format so that each frame aligns correctly with its ground‑truth pose.
-
-### 📚 Pre-trained Model
-We build on MagicLeap’s **SuperGluePretrainedNetwork** for feature matching:
-
-1. Clone the official repo into your working directory:
-```bash
-git clone https://github.com/magicleap/SuperGluePretrainedNetwork.git
-```
-2. Verify that the `SuperGluePretrainedNetwork` folder sits alongside `main.py` so imports resolve cleanly.
-3. The supplied weights (for both SuperPoint and SuperGlue) will be automatically downloaded on first run—no additional steps required.
-
-
-### How to Run
-```bash
+# 2. Run MPC Optimization
+cd SeerDrive/mpc/
 python main.py
+
+# 3. Calculate PDM Scores
+# Calculate scores for MPC trajectory
+python calculate_mpc_pdm_scores.py
+
+# Calculate scores for GTSAM optimized trajectory
+python trajectory_utils/run_pdm_gtsam.py
 ```
-### Licence
+
+### License
 
 This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for the full terms.  
